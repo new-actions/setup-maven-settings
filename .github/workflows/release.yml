@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags: ["release"]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Configure git
+        run: |
+          git config --global committer.email "noreply@github.com"
+          git config --global committer.name "GitHub"
+          git config --global author.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global author.name "Build Server"
+
+      - name: Extract version information
+        run: |
+          VERSION_PRE=`grep \"version\" package.json | cut -d\" -f4`
+          VERSION=`echo $VERSION_PRE | cut -d"-" -f1`
+          MAJOR=`echo "$VERSION" | cut -d . -f 1`
+          MINOR=`echo "$VERSION" | cut -d . -f 2`
+          PATCH=`echo "$VERSION" | cut -d . -f 3`
+          PATCH_NEXT=`expr $PATCH + 1`
+          echo "version_pre=$VERSION_PRE" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "version_next=${MAJOR}.${MINOR}.${PATCH_NEXT}-pre" >> $GITHUB_ENV
+
+      - name: Update package to release version
+        run: |
+          sed -i "s/\"version\": \"${{env.version_pre}}\"/\"version\": \"${{env.version}}\"/" package.json
+          sed -i "s/${{env.version_pre}}/${{env.version}}/" README.md
+
+      - run: npm install
+
+      - run: node_modules/.bin/jest
+
+      - run: node_modules/.bin/webpack
+
+      - run: |
+          git add package.json
+          git add README.md
+          git add dist
+          git commit -m "Release of version ${{ env.version }}"
+          git push origin HEAD:main
+          git tag "v${{ env.version }}"
+          git push origin "v${{ env.version }}"
+
+      - name: Update package to next pre-release version
+        run: |
+          sed -i "s/\"version\": \"${{env.version}}\"/\"version\": \"${{env.version_next}}\"/" package.json
+          sed -i "s/${{env.version}}/${{env.version_next}}/" README.md
+
+      - run: |
+          git add package.json
+          git add README.md
+          git commit -m "Bump version to ${{ env.version_next }}"
+          git push origin HEAD:main
+

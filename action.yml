@@ -1,0 +1,21 @@
+name: 'Setup Maven Settings'
+description: "Simplified setup of the 'settings.xml' configuration file for a Maven project."
+branding:
+  icon: 'check-circle'
+  color: 'blue'
+inputs:
+  path:
+    description: Path to settings.xml
+    required: false
+    default: ~/.m2/settings.xml
+  servers:
+    description: 'Array of detailed server information'
+    required: false
+    default: "[]"
+  serversGH:
+    description: 'Array of server ids for GitHub registries'
+    required: false
+    default: "[]"
+runs:
+  using: 'node16'
+  main: 'dist/bundle.js'

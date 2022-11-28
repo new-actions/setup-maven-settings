@@ -1,0 +1,22 @@
+name: Verify
+
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - run: npm install
+
+      - run: node_modules/.bin/jest
+
+      - run: node_modules/.bin/webpack
