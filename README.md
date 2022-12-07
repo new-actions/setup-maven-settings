@@ -62,7 +62,7 @@ Servers can be conveniently defined as a JSON array. *Passwords* should not be i
 *Workflow definition:*
 
 ```yaml
-    - uses: new-actions/setup-maven-actions@v0.0.1-pre
+    - uses: new-actions/setup-maven-actions@v0.0.1
       with:
         servers: >
           [
@@ -93,7 +93,7 @@ Obviously, GitHub package repositories could also be added like any other server
 *Workflow definition:*
 
 ```yaml
-    - uses: new-actions/setup-maven-actions@v0.0.1-pre
+    - uses: new-actions/setup-maven-actions@v0.0.1
       with:
         serversGH: >
           [ "SOME_ID" ]
@@ -129,7 +129,7 @@ Every step that uses Maven, needs to pass the *password*/*token* as an environme
 It is also possible to specify an alternate path for the `settings.xml` file.
 
 ```yaml
-    - uses: new-actions/setup-maven-actions@v0.0.1-pre
+    - uses: new-actions/setup-maven-actions@v0.0.1
       with:
       	path: ${{github.workspace}}/settings.xml
         ...

@@ -1,6 +1,6 @@
 {
   "name": "setup-maven-settings",
-  "version": "0.0.1-pre",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
